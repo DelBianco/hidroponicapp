@@ -1,0 +1,24 @@
+version: '3.7'
+services:
+  redis:
+    container_name: redis
+    hostname: redis
+    image: redis:alpine
+    command: --port 6380
+    ports:
+      - "6380:6380"
+    expose:
+      - "6380"
+    volumes:
+      - type: volume
+        source: redis-data
+        target: /data
+    restart: always
+    networks:
+    - common_network
+volumes:
+  redis-data: {}
+networks:
+  common_network:
+    external: true
+  
