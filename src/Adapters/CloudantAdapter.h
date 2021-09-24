@@ -11,8 +11,13 @@
 class CloudantAdapter : public PublishAdapter {
 private:
     const char* authToken;
+    unsigned long int tokenExpiresIn;
+    unsigned long int tokenExpiration;
+    unsigned long int currentTime;
     SensorSet* sensorSet;
     HTTPClient httpClient;
+    bool isTokenExpired();
+    void authenticate();
 public:
     void connect();
     void publish(SensorSet sensorSet);

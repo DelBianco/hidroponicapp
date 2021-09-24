@@ -19,7 +19,6 @@ void Gas::setup() {
         MQ135.update();
         calcR0 += MQ135.calibrate(ENV_RATIO_MQ135_CLEAN_AIR);
     }
-
     MQ135.setR0(calcR0/10);
     if(isinf(calcR0)) {
         Serial.println("Warning: Conection issue founded, R0 is infite (Open circuit detected) please check your wiring and supply"); 
@@ -28,6 +27,7 @@ void Gas::setup() {
     if(calcR0 == 0) {
         Serial.println("Warning: Conection issue founded, R0 is zero (Analog pin with short circuit to ground) please check your wiring and supply");
     }
+    Serial.println("Done Calibrating");
 }
 
 void Gas::update() {
