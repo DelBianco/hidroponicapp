@@ -14,7 +14,6 @@ void CloudantAdapter::connect()
     WiFi.begin(ENV_WIFI_SSID, ENV_WIFI_PASSWORD);
     
     Serial.println("Connecting to the WiFi");
-
     while (WiFi.status() != WL_CONNECTED) {
         delay(250);
     }
@@ -46,12 +45,10 @@ void CloudantAdapter::publish(SensorSet sensorSet)
     httpClient.addHeader("Content-Type", "application/json");
     httpClient.addHeader("Authorization", "Bearer " + (String)authToken);
     
-    Serial.println(jsonPayload);
     int code = httpClient.POST(jsonPayload);
     if (code != 201) {
         Serial.println(httpClient.getString());
         Serial.println("Unable to publish data to Cloudant");
         while(true);
     }
-    Serial.println("Data published !!!!!!!!!!!!!!!!!!!!");
 }

@@ -19,6 +19,5 @@ void setup() {
 void loop() {
   sensorSet.update();
   publisher.publish(sensorSet);
-  Serial.println("----");
   delay(8000);
 }
