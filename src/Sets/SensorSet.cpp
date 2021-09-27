@@ -25,9 +25,8 @@ void SensorSet::update() {
 
 DynamicJsonDocument SensorSet::toJson() {
     DynamicJsonDocument json(jsonSize);
-    int counter = 0;
     for (std::list<Sensor*>::iterator it=sensors.begin(); it != sensors.end(); ++it) {
-        json[counter++] = (*it)->toJson();
+        json[(*it)->getKey()] = (*it)->toJson();
     }
     return json;
 }

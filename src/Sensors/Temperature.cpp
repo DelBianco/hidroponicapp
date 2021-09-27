@@ -1,6 +1,6 @@
 #include "Temperature.h"
 
-Temperature::Temperature(): Sensor("Temperature", "ºC") {
+Temperature::Temperature(): Sensor("temperature", "Temperatura", "ºC") {
     ourWire = OneWire(ENV_DS18B20);
     TemperatureSensor = DallasTemperature(&ourWire);
 }

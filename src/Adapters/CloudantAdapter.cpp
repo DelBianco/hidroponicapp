@@ -8,32 +8,38 @@ String CLOUDANT_API_KEY = (String) ENV_CLOUDANT_API_KEY;
 String CLOUDANT_AUTH_GRANT_TYPE = (String) ENV_CLOUDANT_AUTH_GRANT_TYPE;
 String CLOUDANT_DATABASE = (String) ENV_CLOUDANT_DATABASE;
 unsigned long int timeOffset = 0;
+unsigned long int now;
 
 void CloudantAdapter::connect()
 {
     WiFi.mode(WIFI_STA);
     WiFi.begin(ENV_WIFI_SSID, ENV_WIFI_PASSWORD);
     
-    Serial.println("Connecting to the WiFi");
+    Serial.println("[Cloudant] Connecting to the WiFi");
     while (WiFi.status() != WL_CONNECTED) {
         delay(250);
     }
-    Serial.println("WiFi Ok!");
+    Serial.println("[Cloudant] WiFi Ok!");
     authenticate();
+    Serial.println("[Cloudant] Publishing");
 }
 
 void CloudantAdapter::publish(SensorSet sensorSet) 
 {
     if (isTokenExpired()) {
+        Serial.println("[Cloudant] token expired");
         authenticate();
         if(authToken == NULL) {
             return;
         }
     }
+    now = (currentTime - timeOffset + millis());
+
     String jsonPayload;
     DynamicJsonDocument payload(sensorSet.jsonSize + 128);
-    payload["timestamp"] = currentTime - timeOffset + millis();
-    payload["sensors"] = sensorSet.toJson();
+    payload = sensorSet.toJson();
+    payload["_id"] = (String)now;
+    payload["timestamp"] = now;
     payload["wifi"]["RSSI"] = WiFi.RSSI();
     payload["wifi"]["SSID"] = WiFi.SSID();
     payload["esp32"]["HeapSize"] = ESP.getHeapSize();
@@ -46,22 +52,24 @@ void CloudantAdapter::publish(SensorSet sensorSet)
     httpClient.addHeader("Authorization", "Bearer " + (String)authToken);
     int code = httpClient.POST(jsonPayload);
     if (code != 201) {
+        Serial.print("[Cloudant] Unable to publish data: ");
         Serial.println(httpClient.getString());
-        Serial.println("Unable to publish data to Cloudant");
     }
     httpClient.end();
 }
 
 bool CloudantAdapter::isTokenExpired() {
-    return ((millis() - timeOffset) >= tokenExpiresIn);
+    return (((millis()/1000ULL) - timeOffset) >= tokenExpiresIn);
 }
 
 void CloudantAdapter::authenticate() {
+    Serial.println("[Cloudant] Authenticating");
     httpClient.begin(CLOUDANT_AUTH_ENDPOINT);
     httpClient.addHeader("Content-Type", "application/x-www-form-urlencoded");
     httpClient.addHeader("Accept", "application/json");
     if (httpClient.POST("grant_type=" + CLOUDANT_AUTH_GRANT_TYPE + "&apikey=" + CLOUDANT_API_KEY) != 200) {
-        Serial.println("Unable to connect to Cloudant");
+        Serial.println("[Cloudant] Unable to authenticate");
+        Serial.println(httpClient.getString());
         authToken = NULL;
         return ;
     }
@@ -70,6 +78,6 @@ void CloudantAdapter::authenticate() {
     tokenExpiresIn = authResponse["expires_in"];
     tokenExpiration = authResponse["expiration"];
     currentTime = tokenExpiration - tokenExpiresIn;
-    timeOffset = millis();
+    timeOffset = millis()/1000ULL;
     httpClient.end();
 }

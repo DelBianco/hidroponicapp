@@ -1,8 +1,9 @@
 #include "Sensor.h"
 
-Sensor::Sensor(const char* sensorName, const char* sensorUnit) {
+Sensor::Sensor(const char* sensorKey, const char* sensorName, const char* sensorUnit) {
     name = sensorName;
     unit = sensorUnit;
+    key = sensorKey;
 }
 
 const char* Sensor::getName() {return name;}
@@ -10,6 +11,9 @@ void Sensor::setName(const char* n) {name = n;}
 
 const char* Sensor::getUnit() {return unit;}
 void Sensor::setUnit(const char* u) {unit = u;}
+
+const char* Sensor::getKey() {return key;}
+void Sensor::setKey(const char* k) {key = k;}
 
 float Sensor::getValue() {return value;}
 void Sensor::setValue(float v) {value = v;}

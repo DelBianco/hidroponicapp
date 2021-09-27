@@ -1,6 +1,6 @@
 #include "Gas.h"
 
-Gas::Gas(): Sensor("Gas CO2", "PPM") {
+Gas::Gas(): Sensor("environment-gas", "Gas CO2", "PPM") {
     MQ135 = MQUnifiedsensor("ESP 32 Devkit V1", 3.3, 12, ENV_MQ135_PIN, "MQ-135");
 }
 

@@ -14,10 +14,11 @@ void setup() {
   publisher.connect();
   sensorSet = SensorSetBuilder::build();
   sensorSet.setup();
+  delay(2000);
 }
 
 void loop() {
   sensorSet.update();
   publisher.publish(sensorSet);
-  delay(8000);
+  delay(10000);
 }

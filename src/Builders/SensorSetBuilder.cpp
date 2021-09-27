@@ -3,6 +3,8 @@
 #include <Sensors/Gas.h>
 #include <Sensors/Humidity.h>
 #include <Sensors/EnvironmentTemperature.h>
+#include <Sensors/WaterPh.h>
+#include <Sensors/WaterTds.h>
 #include <Mocks/SensorMock.h>
 
 
@@ -12,9 +14,13 @@ SensorSet SensorSetBuilder::build() {
     Gas *  CO2ConcentrationSensor = new Gas();
     Humidity * HumiditySensor = new Humidity();
     EnvironmentTemperature * EnvironmentTemperatureSensor = new EnvironmentTemperature();
+    WaterPh * WaterPhSensor = new WaterPh();
+    WaterTds * WaterTdsSensor = new WaterTds();
 
     SensorSet sensorSet;
 
+    sensorSet.add(WaterPhSensor);
+    sensorSet.add(WaterTdsSensor);
     sensorSet.add(WaterTemperatureSensor);
     sensorSet.add(CO2ConcentrationSensor);
     sensorSet.add(HumiditySensor);
