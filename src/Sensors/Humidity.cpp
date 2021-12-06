@@ -7,6 +7,7 @@ void Humidity::setup() {
 }
 
 void Humidity::update() {
-    delay(dht.getMinimumSamplingPeriod());
-    value = dht.getHumidity();
+    if(!isMeasuring()) {
+        value = dht.getHumidity();
+    }
 }

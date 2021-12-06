@@ -14,6 +14,7 @@ private:
     unsigned long int tokenExpiresIn;
     unsigned long int tokenExpiration;
     unsigned long int currentTime;
+    unsigned long int lastPublish;
     SensorSet* sensorSet;
     HTTPClient httpClient;
     bool isTokenExpired();
@@ -21,6 +22,7 @@ private:
 public:
     void connect();
     void publish(SensorSet sensorSet);
+    bool shouldPublish();
 };
 
 #endif

@@ -16,6 +16,7 @@ SensorSet SensorSetBuilder::build() {
     EnvironmentTemperature * EnvironmentTemperatureSensor = new EnvironmentTemperature();
     WaterPh * WaterPhSensor = new WaterPh();
     WaterTds * WaterTdsSensor = new WaterTds();
+    WaterTdsSensor->setTemperatureSensor(WaterTemperatureSensor);
 
     SensorSet sensorSet;
 

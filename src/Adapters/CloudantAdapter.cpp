@@ -27,9 +27,10 @@ void CloudantAdapter::connect()
 void CloudantAdapter::publish(SensorSet sensorSet) 
 {
     if (isTokenExpired()) {
-        Serial.println("[Cloudant] token expired");
+        Serial.println("[Cloudant] Token expired");
         authenticate();
         if(authToken == NULL) {
+            Serial.println("[Cloudant] Unable to authenticate");
             return;
         }
     }
@@ -56,6 +57,7 @@ void CloudantAdapter::publish(SensorSet sensorSet)
         Serial.println(httpClient.getString());
     }
     httpClient.end();
+    lastPublish = millis();
 }
 
 bool CloudantAdapter::isTokenExpired() {
@@ -68,7 +70,7 @@ void CloudantAdapter::authenticate() {
     httpClient.addHeader("Content-Type", "application/x-www-form-urlencoded");
     httpClient.addHeader("Accept", "application/json");
     if (httpClient.POST("grant_type=" + CLOUDANT_AUTH_GRANT_TYPE + "&apikey=" + CLOUDANT_API_KEY) != 200) {
-        Serial.println("[Cloudant] Unable to authenticate");
+        Serial.print("[Cloudant] Unable to authenticate : ");
         Serial.println(httpClient.getString());
         authToken = NULL;
         return ;
@@ -80,4 +82,8 @@ void CloudantAdapter::authenticate() {
     currentTime = tokenExpiration - tokenExpiresIn;
     timeOffset = millis()/1000ULL;
     httpClient.end();
+}
+
+bool CloudantAdapter::shouldPublish() { 
+    return !lastPublish || (millis() - lastPublish) > (ENV_POST_FREQUENCY * 1000);
 }

@@ -7,6 +7,5 @@ void EnvironmentTemperature::setup() {
 }
 
 void EnvironmentTemperature::update() {
-    delay(dht.getMinimumSamplingPeriod());
     value = dht.getTemperature();
 }

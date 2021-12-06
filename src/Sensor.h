@@ -9,6 +9,9 @@ class Sensor {
     const char* name;
     const char* unit;
     const char* key;
+    bool measuring;
+    float cicleTime = 0;
+    float integrationTime = 0;
     float value = 0.0;
     size_t jsonSize = 512;
 
@@ -16,7 +19,8 @@ class Sensor {
     
     virtual void setup() = 0;
     virtual void update() = 0;
-
+    
+    bool isMeasuring();
     DynamicJsonDocument toJson();
     void dump();
     
@@ -31,6 +35,9 @@ class Sensor {
     
     float getValue();
     void setValue(float v);
+
+    float getIntegrationTime();
+    void setIntegrationTime(float i);
 };
 
 #endif
